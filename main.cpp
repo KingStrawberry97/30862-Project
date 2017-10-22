@@ -76,7 +76,7 @@ int main() {
 
 	// load item data
 
-	for (rapidxml::xml_node<> * item_loop; item_loop; item_loop = item_loop->next_sibling("item")) {
+	for (rapidxml::xml_node<> * item_loop = map -> first_note("item"); item_loop; item_loop = item_loop->next_sibling("item")) {
 		std::cout << "Name: " << item_loop->first_node("name")->value() << std::endl;
 		if (item_loop -> first_node("writing")) {
 			std::cout << item_loop->first_node("writing")->value();
