@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<node1>
+	"parent reached"
+	<node2>
+		"child reached"
+	</node2>   
+</node1>
+<node3>
+	"sibling of parent"
+</node3>
