@@ -24,7 +24,7 @@
 
 class Map {
 public:
-	Map();
+	Map(char*filename);
 	virtual ~Map();
 	map<char*, Base*> all_objects;
 	map<char*, Item*> items;
@@ -34,7 +34,7 @@ public:
 	map<char*, char*> lookup;
 
 private:
-	int createZorkMap(char* filename);
+	void createZorkMap(char* filename);
 	void fragmentXmlNodes(xml_node<>*)
 };
 
