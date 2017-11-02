@@ -12,6 +12,20 @@
 
 
 int main() {
+	
+	// basic loop for getting user input
+	
+	std::string input;
+	while (input != "exit") {
+		std::cout << ">";
+		std::getline(std::cin, input);
+		std::cout << "Input was: " << input << std::endl;
+
+		if (input == "exit") {
+			std::cout << "Exiting..." << std::endl;
+		}
+	}
+	
 	std::cout << "parsing xml file..." << std::endl;
 	rapidxml::xml_document<> doc;
 	rapidxml::xml_node<> * map;
