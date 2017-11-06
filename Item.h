@@ -4,9 +4,14 @@
 
 class Item : public Base {
 
-	char* writing;
-	char* turn_on
-
+private:
+	//std::string writing;
+	//std::string turn_on;
+public:
+	Item(rapidxml::xml_node<>*);
+	virtual ~Item();
+	std::string writing;
+	std::string turn_on;
 };
 
 #endif
