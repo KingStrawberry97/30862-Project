@@ -4,11 +4,14 @@
 
 class Creature : public Base {
 public:
-	std::vector<std::string> vulnerabilities;
+	char* vulnerability[100];
 	Trigger* attack;
 
-	Creature(rapidxml::xml_node<>*);
-	~Creature();
+	Creature() {
+		name = "NO NAME CREATURE";
+		description = "NO DESCRIPTION";
+		attack = NULL;
+	}
 
 };
 
