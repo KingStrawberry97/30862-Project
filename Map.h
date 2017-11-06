@@ -13,29 +13,32 @@
 #include <map>
 #include <queue>
 #include "Item.h"
-#include "Creature.h"
+//#include "Creature.h"
+//#include "Container.h"
 #include "Base.h"
-#include "Room.h"
+//#include "Room.h"
+#include "Trigger.h"
 #include <sstream>
-#include <itorator>
+#include <iterator>
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
 #include "rapidxml_print.hpp"
 
 class Map {
 public:
-	Map(char*filename);
+	Map(std::string filename);
 	virtual ~Map();
-	map<char*, Base*> all_objects;
-	map<char*, Item*> items;
-	map<char*, Container*> containers;
-	map<char*, Creature*> creatures;
-	map<char*, Room*> rooms;
-	map<char*, char*> lookup;
+	std::map<char*, Base*> all_objects;
+	std::map<char*, Item*> items;
+	//std::map<char*, Container*> containers;
+	//std::map<char*, Creature*> creatures;
+	//std::map<char*, Room*> rooms;
+	//map<char*, char*> lookup;
+	void printItems();
 
 private:
-	void createZorkMap(char* filename);
-	void fragmentXmlNodes(xml_node<>*)
+	void createZorkMap(std::string filename);
+	void fragmentXmlNodes(rapidxml::xml_node<>*, std::queue<rapidxml::xml_node<>*>&, std::queue<rapidxml::xml_node<> *>&, std::queue<rapidxml::xml_node<> *>&,std::queue<rapidxml::xml_node<> *>&);
 };
 
 #endif /* MAP_H_ */

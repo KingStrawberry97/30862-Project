@@ -4,9 +4,12 @@
 
 class Item : public Base {
 
+private:
 	char* writing;
-	char* turn_on
-
+	char* turn_on;
+public:
+	Item(rapidxml::xml_node<>*);
+	virtual ~Item();
 };
 
 #endif

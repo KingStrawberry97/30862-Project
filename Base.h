@@ -1,19 +1,21 @@
 #ifndef BASE_H_
 #define BASE_H_
-#include "Trigger.h"
-#include <vector>
+#include<vector>
+#include"Trigger.h"
 #include<stdio.h>
+#include <string.h>
+#include "rapidxml.hpp"
+#include "rapidxml_utils.hpp"
+#include "rapidxml_print.hpp"
 
 class Base {
-
-protected:
+public:
 	char* name;
 	char* status;
 	char* description;
-	vector<Tigger*>triggers;
-public:
+	//std::vector<Tigger*>triggers;
 	Base();
-	virutal ~Base();
+	virtual ~Base();
 };
 
 #endif
