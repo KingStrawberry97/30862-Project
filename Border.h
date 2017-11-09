@@ -4,9 +4,10 @@
 
 class Border : public Base {
 public:
-	char* room; // may want to change this to Room later?
-	char* direction;
-
+	Border(rapidxml::xml_node<>*);
+	~Border();
+	std::string room;
+	std::string direction;
 };
 
 #endif

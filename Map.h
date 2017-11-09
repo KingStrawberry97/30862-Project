@@ -13,10 +13,9 @@
 #include <map>
 #include <queue>
 #include "Item.h"
-//#include "Creature.h"
-//#include "Container.h"
+#include "Creature.h"
 #include "Base.h"
-//#include "Room.h"
+#include "Room.h"
 #include "Trigger.h"
 #include <sstream>
 #include <iterator>
@@ -33,12 +32,15 @@ public:
 	std::map<std::string, Base*> all_objects;
 	std::map<std::string, Item*> items;
 	std::map<std::string, Container*> containers;
-	//std::map<std::string, Creature*> creatures;
-	//std::map<std::string, Room*> rooms;
+	std::map<std::string, Creature*> creatures;
+	std::map<std::string, Room*> rooms;
 	//map<char*, char*> lookup;
 	void printItems();
 	void printContainers();
 	void printCreatures();
+	void printRooms();
+	void printTriggers(Trigger* trigger);
+	void run();
 
 private:
 	void createZorkMap(std::string filename);

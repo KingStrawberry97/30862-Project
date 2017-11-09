@@ -87,6 +87,21 @@ void Map::fragmentXmlNodes(rapidxml::xml_node<>* map_node, std::queue<rapidxml::
 
 }
 
+void Map::run() {
+	std::string input;
+
+	while (input != "exit") {
+		std::getline(std::cin, input);
+		std::cout << "Input was: " << input << std::endl;
+
+		if (input == "exit") {
+			std::cout << "Exiting..." << std::endl;
+		}
+	}
+}
+
+
+
 void Map::printItems() {
 	std::map<std::string, Item*>::iterator p = items.begin();
 	std::cout << "///// ITEMS /////" << std::endl;
@@ -94,13 +109,25 @@ void Map::printItems() {
 		//std::cout<< p->first << std::endl;
 		std::cout<< "Item name: " << p->second -> name << std::endl;
 		std::cout << "Item writing:  " << p->second->writing << std::endl;
+		std::cout << "Item status: " << p->second->status << std::endl;
+		if (p->second->turn_on != NULL) {
+			std::cout << "Item turnon: " << std::endl;
+			printTriggers(p->second->turn_on);
+		}
+		// print triggers vector
+		std::cout << "Triggers: " << std::endl;
+		for (std::vector<Trigger*>::iterator q = p->second->triggers.begin(); q != p->second->triggers.end(); ++q) {
+			printTriggers(*q);
+		}
+		std::cout << std::endl;
+
 		++p;
 	}
 }
 
 void Map::printCreatures() {
 	std::map<std::string, Creature*>::iterator p = creatures.begin();
-	std::cout << "///// CREATURES /////" << std::endl;
+	std::cout << "\n///// CREATURES /////" << std::endl;
 	while (p != creatures.end()) {
 		std::cout << "Creature name: " << p->second->name << std::endl;
 		// print vulnerabilities vector
@@ -108,14 +135,23 @@ void Map::printCreatures() {
 		for (std::vector<std::string>::iterator q = p->second->vulnerabilities.begin(); q != p->second->vulnerabilities.end(); ++q) {
 			std::cout << *q;
 		}
-		std::cout << "\n";
+		std::cout << std::endl;
+		// print triggers vector
+		std::cout << "Triggers: " << std::endl;
+		for (std::vector<Trigger*>::iterator q = p->second->triggers.begin(); q != p->second->triggers.end(); ++q) {
+			printTriggers(*q);
+		}
+		// print attack
+		std::cout << "Attack: " << std::endl;
+		printTriggers(p->second->attack);
+		std::cout << std::endl;
 		++p;
 	}
 }
 
 void Map::printRooms() {
 	std::map<std::string, Room*>::iterator p = rooms.begin();
-	std::cout << "///// ROOMS /////" << std::endl;
+	std::cout << "\n///// ROOMS /////" << std::endl;
 	while (p != rooms.end()) {
 		std::cout << "Room name:" << p->second->name << std::endl;
 		std::cout << "Type: " << p->second->type << std::endl;
@@ -143,6 +179,11 @@ void Map::printRooms() {
 		for (std::vector<Border*>::iterator q = p->second->borders.begin(); q != p->second->borders.end(); ++q) {
 			std::cout << (*q)->name << " to the " << (*q)->direction << std::endl;		
 		}
+		// print triggers vector
+		std::cout << "Triggers: " << std::endl;
+		for (std::vector<Trigger*>::iterator q = p->second->triggers.begin(); q != p->second->triggers.end(); ++q) {
+			printTriggers(*q);
+		}
 		std::cout << std::endl;
 		p++;
 	}
@@ -154,6 +195,7 @@ void Map::printContainers() {
 	while (p != containers.end()) {
 		std::cout << "Container name: " << p->second->name << std::endl;
 		std::cout << "Items: ";
+		std::cout << "Container status: " << p->second->status << std::endl;
 		// print items vector
 		for (std::vector<std::string>::iterator q = p->second->items.begin(); q != p->second->items.end(); ++q) {
 			std::cout << *q << " ";
@@ -164,7 +206,47 @@ void Map::printContainers() {
 			std::cout << *q << " ";
 		}
 		std::cout << "\n";
-
+		// print triggers vector
+		std::cout << "Triggers: " << std::endl;
+		for (std::vector<Trigger*>::iterator q = p->second->triggers.begin(); q != p->second->triggers.end(); ++q) {
+			printTriggers(*q);
+		}
 		p++;
 	}
+}
+
+void Map::printTriggers(Trigger* trigger) {
+	if (trigger->command != "") {
+		std::cout << "Command: " << trigger->command << std::endl;
+	}
+	if (trigger->type != "") {
+		std::cout << "Type: " << trigger->type << std::endl;
+	}
+	std::cout << "Print: ";
+	for (std::vector<std::string>::iterator q = trigger->print.begin(); q != trigger->print.end(); ++q) {
+		std::cout << *q << "; ";
+	}
+	std::cout << std::endl;
+	std::cout << "Actions: ";
+	for (std::vector<std::string>::iterator q = trigger->action.begin(); q != trigger->action.end(); ++q) {
+		std::cout << *q << "; ";
+	}
+	std::cout << std::endl;
+	std::cout << "CONDITIONS: " << std::endl;
+	for (std::vector<Condition*>::iterator q = trigger->conditions.begin(); q != trigger->conditions.end(); ++q) {
+		if ((*q)->owner != "") {
+			std::cout << "owner: " << (*q)->owner << std::endl;
+		}
+		if ((*q)->has != "") {
+			std::cout << "has: " << (*q)->has << std::endl;
+		}
+		if ((*q)->object != "") {
+			std::cout << "object: " << (*q)->object << std::endl;
+		}
+		if ((*q)->status != "") {
+			std::cout << "status: " << (*q)->status << std::endl;
+		}
+	}
+	std::cout << std::endl;
+
 }
