@@ -14,10 +14,6 @@
 
 
 int main(int argc, char* argv[]) {
-<<<<<<< HEAD
-	Map * game = new Map("xml_test.xml");
-	game -> printItems();
-=======
 	std::string input;
 	bool valid = false;
 
@@ -38,7 +34,6 @@ int main(int argc, char* argv[]) {
 	game->printContainers();
 	game->printCreatures();
 	game->printRooms();
->>>>>>> d3381c472fad9557d726ff9dd5c9b4d515ea62da
     return 0;
 }
 

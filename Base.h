@@ -10,14 +10,6 @@
 
 class Base {
 public:
-<<<<<<< HEAD
-	char* name;
-	char* status;
-	char* description;
-	//std::vector<Tigger*>triggers;
-	Base();
-	virtual ~Base();
-=======
 	std::string name;
 	std::string status;
 	std::string description;
@@ -25,7 +17,6 @@ public:
 	Base();
 	~Base();
 
->>>>>>> d3381c472fad9557d726ff9dd5c9b4d515ea62da
 };
 
 #endif
