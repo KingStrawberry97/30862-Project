@@ -18,7 +18,7 @@ void Map::createZorkMap(std::string filename) {
 	rapidxml::xml_document<> doc;
 	rapidxml::xml_node<> * map_node;
 	// read xml file into vector
-	std::ifstream theFile("xml_test.xml");
+	std::ifstream theFile(filename);
 	std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
 	buffer.push_back('\0');
 	// parse buffer using xml file parsing library into doc
@@ -34,7 +34,7 @@ void Map::createZorkMap(std::string filename) {
 	fragmentXmlNodes(map_node, rooms_nodes, items_nodes, containers_nodes, creatures_nodes);
 
 	Room* newRoom;
-	while(rooms_nodes.size() != 0){
+	while(rooms_nodes.size() != 0){  //these while loops initialize the fields contained in Map object as well as creates objects to be used in the game
 		newRoom = new Room(rooms_nodes.front());
 		all_objects[newRoom -> name] = newRoom;
 		rooms[newRoom -> name] = newRoom;
@@ -70,16 +70,16 @@ void Map::fragmentXmlNodes(rapidxml::xml_node<>* map_node, std::queue<rapidxml::
 
 	rapidxml::xml_node<>* node = map_node -> first_node();
 	while(node != NULL){
-		if((std::string)node->name() == (std::string)"room"){
+		if((std::string)node->name() == (std::string)"room"){ //creates queue for room nodes contained in the xml document
 			rooms.push(node);
 		}
-		else if((std::string)node -> name() == (std::string)"item") {
+		else if((std::string)node -> name() == (std::string)"item") {//creates queue for item nodes contained in the xml document
 			items.push(node);
 		}
-		else if((std::string)node -> name() == (std::string)"container") {
+		else if((std::string)node -> name() == (std::string)"container") {//creates container for container nodes contained in the xml document
 			containers.push(node);
 		}
-		else if((std::string)node -> name() == (std::string)"creature") {
+		else if((std::string)node -> name() == (std::string)"creature") {//creates queue for creature nodes contained in the xml document
 			creatures.push(node);
 		}
 		node = node -> next_sibling();
@@ -87,22 +87,14 @@ void Map::fragmentXmlNodes(rapidxml::xml_node<>* map_node, std::queue<rapidxml::
 
 }
 
-void Map::run() {
-	std::string input;
-
-	while (input != "exit") {
-		std::getline(std::cin, input);
-		std::cout << "Input was: " << input << std::endl;
-
-		if (input == "exit") {
-			std::cout << "Exiting..." << std::endl;
-		}
-	}
+void Map::run() {  //main loop for functionality of program
+	std::string startRoom = "Entrance";
+	std::cout << rooms.find(startRoom) -> second -> description <<std::endl;
 }
 
 
 
-void Map::printItems() {
+void Map::printItems() { // print item function that is used for debug purposes only
 	std::map<std::string, Item*>::iterator p = items.begin();
 	std::cout << "///// ITEMS /////" << std::endl;
 	while(p != items.end()) {
@@ -125,7 +117,7 @@ void Map::printItems() {
 	}
 }
 
-void Map::printCreatures() {
+void Map::printCreatures() { //prints all creatures, used for debug purposes only
 	std::map<std::string, Creature*>::iterator p = creatures.begin();
 	std::cout << "\n///// CREATURES /////" << std::endl;
 	while (p != creatures.end()) {
@@ -149,7 +141,7 @@ void Map::printCreatures() {
 	}
 }
 
-void Map::printRooms() {
+void Map::printRooms() {  // prints all rooms, used for debug purposes only
 	std::map<std::string, Room*>::iterator p = rooms.begin();
 	std::cout << "\n///// ROOMS /////" << std::endl;
 	while (p != rooms.end()) {
@@ -189,7 +181,7 @@ void Map::printRooms() {
 	}
 }
 
-void Map::printContainers() {
+void Map::printContainers() {  //prints all containers, used for debug purposes only
 	std::map<std::string, Container*>::iterator p = containers.begin();
 	std::cout << "///// CONTAINERS /////" << std::endl;
 	while (p != containers.end()) {
@@ -215,7 +207,7 @@ void Map::printContainers() {
 	}
 }
 
-void Map::printTriggers(Trigger* trigger) {
+void Map::printTriggers(Trigger* trigger) {  //prints all triggers, used for debug purposes only
 	if (trigger->command != "") {
 		std::cout << "Command: " << trigger->command << std::endl;
 	}
