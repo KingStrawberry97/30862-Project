@@ -87,10 +87,13 @@ void Map::fragmentXmlNodes(rapidxml::xml_node<>* map_node, std::queue<rapidxml::
 
 }
 
-void Map::run() {  //main loop for functionality of program
+void Map::run() {  // main loop for functionality of program
 	std::string startRoom = "Entrance";
 	std::string currRoom = startRoom;
 	std::string input = "";
+	std::vector<std::string> valid_direction = { "n", "s", "e", "w" };
+	Trigger* trigger = NULL;
+	
 
 	bool valid_input = false;
 
@@ -98,10 +101,74 @@ void Map::run() {  //main loop for functionality of program
 	
 	while (!valid_input) {
 		std::getline(std::cin, input);
+		std::string first_word = input.substr(0, input.find(" "));
 
 		if (checkInput(input)) {
 			std::cout << "Input valid." << std::endl;
-			//valid_input = true;
+			trigger = checkRoomTriggers(findRoom(currRoom), input);
+			if (trigger != NULL) {
+				std::cout << "TRIGGER FOUND for command: " << input << std::endl;
+			}
+			for (std::vector<std::string>::iterator p = valid_direction.begin(); p != valid_direction.end(); ++p) {
+				if ((*p) == input) {
+					
+				}
+			}
+
+			// print input
+
+			if (input == (std::string)"i") {
+				
+			}
+
+			// open exit
+
+			else if (input == (std::string)"open exit") {
+				
+			}
+
+			// take [item]
+
+			else if (first_word == (std::string)"take" && (countWords(input) == 2)) {
+				
+			}
+
+			// open [item]
+
+			else if (first_word == (std::string)"open" && input != (std::string)"open exit" && (countWords(input) == 2)) {
+				
+			}
+
+			// read [item]
+
+			else if (first_word == (std::string)"read" && (countWords(input) == 2)) {
+				
+			}
+
+			// drop [item]
+
+			else if (first_word == (std::string)"drop" && (countWords(input) == 2)) {
+				
+			}
+
+			// put [item] in [container]
+
+			else if (first_word == (std::string)"put" && (countWords(input) == 4) && input.find(" in ") != std::string::npos) {
+				
+			}
+
+			// turn on [item]
+
+			else if (input.find("turn on") != std::string::npos && first_word == (std::string)"turn" && (countWords(input) == 3)) {
+				
+			}
+
+			// attack [creature] with [item]
+
+			else if (first_word == (std::string)"attack" && (countWords(input) == 4) && input.find(" with ") != std::string::npos) {
+				
+			}
+
 		}
 		else {
 			std::cout << "Invalid input." << std::endl;
@@ -335,4 +402,86 @@ void Map::printTriggers(Trigger* trigger) {
 	}
 	std::cout << std::endl;
 
+}
+
+Item* Map::findItem(std::string name) {
+	std::map<std::string, Item*>::iterator p = items.begin();
+	while (p != items.end()) {
+		if (p->second->name == name) {
+			return (p->second);
+		}
+		p++;
+	}
+	return NULL;
+}
+
+Container* Map::findContainer(std::string name) {
+	std::map<std::string, Container*>::iterator p = containers.begin();
+	while (p != containers.end()) {
+		if (p->second->name == name) {
+			return (p->second);
+		}
+		p++;
+	}
+	return NULL;
+}
+
+Creature* Map::findCreature(std::string name) {
+	std::map<std::string, Creature*>::iterator p = creatures.begin();
+	while (p != creatures.end()) {
+		if (p->second->name == name) {
+			return (p->second);
+		}
+		p++;
+	}
+	return NULL;
+}
+
+Room* Map::findRoom(std::string name) {
+	std::map<std::string, Room*>::iterator p = rooms.begin();
+	while (p != rooms.end()) {
+		if (p->second->name == name) {
+			return (p->second);
+		}
+		p++;
+	}
+	return NULL;
+}
+
+Trigger* Map::checkRoomTriggers(Room* current_room, std::string command) {
+	Item* item = NULL;
+	Container* container = NULL;
+	Creature* creature = NULL;
+	Trigger* found_trigger = NULL;
+
+	// if function finds trigger that matches the command, it returns the trigger
+	// otherwise, returns NULL
+
+	found_trigger = current_room->checkTriggers(command);
+	if (found_trigger != NULL) {
+		return found_trigger;
+	}
+
+	for (std::vector<std::string>::iterator q = current_room->items.begin(); q != current_room->items.end(); ++q) {
+		item = findItem(*q);
+		found_trigger = item->checkTriggers(command);
+		if (found_trigger != NULL) {
+			return found_trigger;
+		}
+	}
+	for (std::vector<std::string>::iterator q = current_room->containers.begin(); q != current_room->containers.end(); ++q) {
+		container = findContainer(*q);
+		found_trigger = container->checkTriggers(command);
+		if (found_trigger != NULL) {
+			return found_trigger;
+		}
+	}
+	for (std::vector<std::string>::iterator q = current_room->creatures.begin(); q != current_room->creatures.end(); ++q) {
+		creature = findCreature(*q);
+		found_trigger = creature->checkTriggers(command);
+		if (found_trigger != NULL) {
+			return found_trigger;
+		}
+	}
+	return NULL;
 }

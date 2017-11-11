@@ -17,6 +17,8 @@ public:
 	Base();
 	~Base();
 
+	Trigger* checkTriggers(std::string command);
+
 };
 
 #endif

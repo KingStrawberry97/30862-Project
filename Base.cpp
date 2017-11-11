@@ -13,5 +13,12 @@ Base::~Base() {
 
 }
 
-
+Trigger* Base::checkTriggers(std::string command) {
+	for (std::vector<Trigger*>::iterator q = triggers.begin(); q != triggers.end(); ++q) {
+		if ((*q)->command == command) {
+			return (*q);
+		}
+	}
+	return NULL;
+}
 

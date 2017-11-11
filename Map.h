@@ -47,6 +47,12 @@ private:
 	void fragmentXmlNodes(rapidxml::xml_node<>*, std::queue<rapidxml::xml_node<>*>&, std::queue<rapidxml::xml_node<> *>&, std::queue<rapidxml::xml_node<> *>&,std::queue<rapidxml::xml_node<> *>&);
 	bool checkInput(std::string input);
 	int countWords(std::string input);
+	Item* findItem(std::string name);
+	Container* findContainer(std::string name);
+	Creature* findCreature(std::string name);
+	Room* findRoom(std::string name);
+	Trigger* checkRoomTriggers(Room* current_room, std::string command);
+
 };
 
 #endif /* MAP_H_ */
