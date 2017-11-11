@@ -45,6 +45,8 @@ public:
 private:
 	void createZorkMap(std::string filename);
 	void fragmentXmlNodes(rapidxml::xml_node<>*, std::queue<rapidxml::xml_node<>*>&, std::queue<rapidxml::xml_node<> *>&, std::queue<rapidxml::xml_node<> *>&,std::queue<rapidxml::xml_node<> *>&);
+	bool checkInput(std::string input);
+	int countWords(std::string input);
 };
 
 #endif /* MAP_H_ */

@@ -18,7 +18,7 @@ void Map::createZorkMap(std::string filename) {
 	rapidxml::xml_document<> doc;
 	rapidxml::xml_node<> * map_node;
 	// read xml file into vector
-	std::ifstream theFile("xml_test.xml");
+	std::ifstream theFile(filename);
 	std::vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
 	buffer.push_back('\0');
 	// parse buffer using xml file parsing library into doc
@@ -87,20 +87,106 @@ void Map::fragmentXmlNodes(rapidxml::xml_node<>* map_node, std::queue<rapidxml::
 
 }
 
-void Map::run() {
-	std::string input;
+void Map::run() {  //main loop for functionality of program
+	std::string startRoom = "Entrance";
+	std::string currRoom = startRoom;
+	std::string input = "";
 
-	while (input != "exit") {
+	bool valid_input = false;
+
+	std::cout << rooms.find(startRoom)->second->description << std::endl;
+	
+	while (!valid_input) {
 		std::getline(std::cin, input);
-		std::cout << "Input was: " << input << std::endl;
 
-		if (input == "exit") {
-			std::cout << "Exiting..." << std::endl;
+		if (checkInput(input)) {
+			std::cout << "Input valid." << std::endl;
+			//valid_input = true;
+		}
+		else {
+			std::cout << "Invalid input." << std::endl;
 		}
 	}
+
 }
 
+bool Map::checkInput(std::string input) {
+	std::vector<std::string> valid_direction = {"n", "s", "e", "w"};
+	std::string first_word = input.substr(0, input.find(" "));
+	
+	// check if directional input
 
+	for (std::vector<std::string>::iterator p = valid_direction.begin(); p != valid_direction.end(); ++p) {
+		if ((*p) == input) {
+			return true;
+		}
+	}
+
+	// check if "check inventory"
+
+	if (input == (std::string)"i") {
+		return true;
+	}
+
+	// check if "open exit"
+
+	else if (input == (std::string)"open exit") {
+		return true;
+	}
+
+	// check if "take"
+
+	else if (first_word == (std::string)"take" && (countWords(input) == 2)) {
+		return true;
+	}
+
+	// check if "open"
+
+	else if (first_word == (std::string)"open" && input != (std::string)"open exit" && (countWords(input) == 2)) {
+		return true;
+	}
+
+	// check if "read"
+
+	else if (first_word == (std::string)"read" && (countWords(input) == 2)) {
+		return true;
+	}
+
+	// check if "drop"
+
+	else if (first_word == (std::string)"drop" && (countWords(input) == 2)) {
+		return true;
+	}
+
+	// check if "put"
+
+	else if (first_word == (std::string)"put" && (countWords(input) == 4) && input.find(" in ") != std::string::npos) {
+		return true;
+	}
+
+	// check if "turn on"
+
+	else if (input.find("turn on") != std::string::npos && first_word == (std::string)"turn" && (countWords(input) == 3)) {
+		return true;
+	}
+
+	// check if "attack"
+
+	else if (first_word == (std::string)"attack" && (countWords(input) == 4) && input.find(" with ") != std::string::npos) {
+		return true;
+	}
+
+	return false;
+}
+
+int Map::countWords(std::string input)
+{
+	int number_of_words = 1;
+	for (int i = 0; i < input.length(); i++)
+		if (input[i] == ' ')
+			number_of_words++;
+	return number_of_words;
+}
 
 void Map::printItems() {
 	std::map<std::string, Item*>::iterator p = items.begin();

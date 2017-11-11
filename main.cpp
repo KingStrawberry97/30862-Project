@@ -15,25 +15,17 @@
 
 int main(int argc, char* argv[]) {
 	std::string input;
-	bool valid = false;
-
-	while (!valid) {
-		std::cout << "Input file name: ";
-		std::getline(std::cin, input);
-
-		if (input == "xml_test.xml") {
-			std::cout << "Running..." << std::endl;
-			valid = true;
-		}
-	}
+	std::cout << "Input file name: ";
+	std::getline(std::cin, input);
 
 	Map * game = new Map(input);
 	game->run();
-
+	/*
 	game -> printItems();
 	game->printContainers();
 	game->printCreatures();
 	game->printRooms();
-    return 0;
+	*/
+	return 0;
 }
 
