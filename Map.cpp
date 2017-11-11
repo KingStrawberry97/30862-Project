@@ -115,10 +115,10 @@ void Map::run() {  // main loop for functionality of program
 				}
 			}
 
-			// print input
+			// print inventory
 
 			if (input == (std::string)"i") {
-				
+				printInventory();
 			}
 
 			// open exit
@@ -253,6 +253,25 @@ int Map::countWords(std::string input)
 		if (input[i] == ' ')
 			number_of_words++;
 	return number_of_words;
+}
+
+void Map::printInventory() {
+	bool inv_empty = true;
+	std::cout << "Inventory: ";
+	for (std::map<std::string, Item*>::iterator p = items.begin(); p != items.end(); ++p) {
+		if (p->second->owner == (std::string)"inventory") {
+			if (inv_empty != true) {
+				std::cout << ", ";
+			}
+			std::cout << p->second->name;
+			inv_empty = false;
+		}
+	}
+
+	if (inv_empty == true) {
+		std::cout << "empty" << std::endl;
+	}
+
 }
 
 void Map::printItems() {

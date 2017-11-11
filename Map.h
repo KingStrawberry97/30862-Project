@@ -36,6 +36,7 @@ public:
 	std::map<std::string, Room*> rooms;
 	//map<char*, char*> lookup;
 	void printItems();
+	void printInventory();
 	void printContainers();
 	void printCreatures();
 	void printRooms();
