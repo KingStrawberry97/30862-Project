@@ -57,6 +57,10 @@ void Map::createZorkMap(std::string filename) {
 		containers_nodes.pop();
 	}
 
+	// set item owner field to container or room
+
+	setItemOwners();
+
 	Creature * newCreature;
 	while(creatures_nodes.size() != 0){
 		newCreature = new Creature(creatures_nodes.front());
@@ -95,80 +99,131 @@ void Map::run() {  // main loop for functionality of program
 	Trigger* trigger = NULL;
 	
 
-	bool valid_input = false;
+	bool game_over = false;
+	bool trigger_override = false;
 
 	std::cout << rooms.find(startRoom)->second->description << std::endl;
 	
-	while (!valid_input) {
+	while (!game_over) {
 		std::getline(std::cin, input);
 		std::string first_word = input.substr(0, input.find(" "));
 
 		if (checkInput(input)) {
+			trigger_override = false;
 			std::cout << "Input valid." << std::endl;
 			trigger = checkRoomTriggers(findRoom(currRoom), input);
+
+			// if trigger != NULL, there is a trigger that overrides the given command
+
 			if (trigger != NULL) {
 				std::cout << "TRIGGER FOUND for command: " << input << std::endl;
-			}
-			for (std::vector<std::string>::iterator p = valid_direction.begin(); p != valid_direction.end(); ++p) {
-				if ((*p) == input) {
-					
+
+				// check if trigger conditions are met
+				// if so, override command and execute trigger
+
+				checkTriggerConditions(trigger);
+				if (trigger->conditions_met && (!(trigger->completed))) {
+					executeTrigger(trigger);
+					trigger_override = true;
 				}
 			}
 
-			// print inventory
 
-			if (input == (std::string)"i") {
-				printInventory();
+
+
+			// if no trigger overrides command, execute command
+
+			if (trigger_override == false) {
+				for (std::vector<std::string>::iterator p = valid_direction.begin(); p != valid_direction.end(); ++p) {
+					if ((*p) == input) {
+
+					}
+				}
+
+				// print inventory
+
+				if (input == (std::string)"i") {
+					printInventory();
+				}
+
+				// open exit
+
+				else if (input == (std::string)"open exit") {
+
+				}
+
+				// take [item]
+
+				else if (first_word == (std::string)"take" && (countWords(input) == 2)) {
+					std::vector<std::string> words = tokenizeString(input);
+					Item* item = findItem(words.at(1));
+					if (item != NULL) {
+						if (item->owner == (std::string)"inventory") {
+							std::cout << "You already have that." << std::endl;
+						}
+						else if (item->owner != rooms.find(currRoom)->second->name) {
+							std::cout << "You can't take that." << std::endl;
+						}
+						else {
+							std::cout << "You take the " << item->name << "." << std::endl;
+							item->owner = "inventory";
+						}
+					}
+					else {
+						std::cout << "You can't take that." << std::endl;
+					}
+				}
+
+				// open [container]
+
+				else if (first_word == (std::string)"open" && input != (std::string)"open exit" && (countWords(input) == 2)) {
+
+				}
+
+				// read [item]
+
+				else if (first_word == (std::string)"read" && (countWords(input) == 2)) {
+					std::vector<std::string> words = tokenizeString(input);
+					Item* item = findItem(words.at(1));
+					if (item != NULL) {
+						if (item->owner != (std::string)"inventory") {
+							std::cout << "You don't have that item." << std::endl;
+						}
+						else {
+							std::cout << item->writing << std::endl;
+						}
+					}
+					else {
+						std::cout << "You don't have that item." << std::endl;
+					}
+
+				}
+
+				// drop [item]
+
+				else if (first_word == (std::string)"drop" && (countWords(input) == 2)) {
+
+				}
+
+				// put [item] in [container]
+
+				else if (first_word == (std::string)"put" && (countWords(input) == 4) && input.find(" in ") != std::string::npos) {
+
+				}
+
+				// turn on [item]
+
+				else if (input.find("turn on") != std::string::npos && first_word == (std::string)"turn" && (countWords(input) == 3)) {
+
+				}
+
+				// attack [creature] with [item]
+
+				else if (first_word == (std::string)"attack" && (countWords(input) == 4) && input.find(" with ") != std::string::npos) {
+
+				}
+
 			}
-
-			// open exit
-
-			else if (input == (std::string)"open exit") {
-				
-			}
-
-			// take [item]
-
-			else if (first_word == (std::string)"take" && (countWords(input) == 2)) {
-				
-			}
-
-			// open [item]
-
-			else if (first_word == (std::string)"open" && input != (std::string)"open exit" && (countWords(input) == 2)) {
-				
-			}
-
-			// read [item]
-
-			else if (first_word == (std::string)"read" && (countWords(input) == 2)) {
-				
-			}
-
-			// drop [item]
-
-			else if (first_word == (std::string)"drop" && (countWords(input) == 2)) {
-				
-			}
-
-			// put [item] in [container]
-
-			else if (first_word == (std::string)"put" && (countWords(input) == 4) && input.find(" in ") != std::string::npos) {
-				
-			}
-
-			// turn on [item]
-
-			else if (input.find("turn on") != std::string::npos && first_word == (std::string)"turn" && (countWords(input) == 3)) {
-				
-			}
-
-			// attack [creature] with [item]
-
-			else if (first_word == (std::string)"attack" && (countWords(input) == 4) && input.find(" with ") != std::string::npos) {
-				
-			}
-
 		}
 		else {
 			std::cout << "Invalid input." << std::endl;
@@ -503,4 +558,118 @@ Trigger* Map::checkRoomTriggers(Room* current_room, std::string command) {
 		}
 	}
 	return NULL;
+}
+
+void Map::setItemOwners() {
+	Item* item = NULL;
+	for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
+		for (std::vector<std::string>::iterator q = p->second->items.begin(); q != p->second->items.end(); ++q) {
+			item = findItem((*q));
+			item->owner = p->second->name;
+		}
+	}
+	for (std::map<std::string, Container*>::iterator p = containers.begin(); p != containers.end(); ++p) {
+		for (std::vector<std::string>::iterator q = p->second->items.begin(); q != p->second->items.end(); ++q) {
+			item = findItem((*q));
+			item->owner = p->second->name;
+		}
+	}
+
+}
+
+void Map::checkTriggerConditions(Trigger* trigger) {
+	if (trigger == NULL) {
+		return;
+	}
+	if (trigger->conditions.size() == 0) {
+		trigger->conditions_met = true;
+		return;
+	}
+	for (std::vector<Condition*>::iterator p = trigger->conditions.begin(); p != trigger->conditions.end(); ++p ) {
+		// Case 1: [Object] is [status]
+		if ((*p)->status != (std::string)"") {
+			
+		}
+
+		// Case 2: [Container/Inventory] has [Object]
+		// I'm assuming here that the only two things that can "own" an object are the inventory or a container
+		// If this isn't true, then this will have to be changed
+		else if ((*p)->owner != (std::string)"") {
+			Item* item = findItem((*p)->object);
+			if (item == NULL) {
+				std::cout << "ERROR: ITEM NOT FOUND" << std::endl;
+				return;
+			}
+			if ((*p)->owner == (std::string)"inventory") {
+				if (item->owner == (std::string)"inventory") {
+					if ((*p)->has == (std::string)"no") {
+						trigger->conditions_met = false;
+						return;
+					}
+					else if ((*p)->has == (std::string)"yes") {
+						trigger->conditions_met = true;
+					}
+
+				}
+				else {
+					if ((*p)->has == (std::string)"no") {
+						trigger->conditions_met = true;
+					}
+					else if ((*p)->has == (std::string)"yes") {
+						trigger->conditions_met = false;
+						return;
+					}
+				}
+			}
+			else {
+				Container* owner = findContainer((*p)->owner);
+				if (owner == NULL) {
+					std::cout << "ERROR: OWNER NOT FOUND" << std::endl;
+					return;
+				}
+				if (item->owner == owner->name) {
+					if ((*p)->has == (std::string)"no") {
+						trigger->conditions_met = false;
+						return;
+					}
+					else {
+						trigger->conditions_met = true;
+					}
+				}
+				else {
+					if ((*p)->has == (std::string)"no") {
+						trigger->conditions_met = true;
+					}
+					else {
+						trigger->conditions_met = false;
+						return;
+					}
+				}
+			}
+
+		}
+	}
+}
+
+std::vector<std::string> Map::tokenizeString(std::string string) {
+	std::stringstream ss(string);
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
+	std::vector<std::string> vstrings(begin, end);
+	return vstrings;
+}
+
+void Map::executeTrigger(Trigger* trigger) {
+
+	for (std::vector<std::string>::iterator p = trigger->print.begin(); p != trigger->print.end(); ++p) {
+		std::cout << (*p) << std::endl;
+	}
+
+	for (std::vector<std::string>::iterator p = trigger->action.begin(); p != trigger->action.end(); ++p) {
+		// do this later
+	}
+
+	if (trigger->type == "single") {
+		trigger->completed = true;
+	}
 }

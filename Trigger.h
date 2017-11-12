@@ -9,6 +9,7 @@ public:
 	std::vector<std::string> action;
 	std::string type;
 	std::vector<Condition*> conditions;
+	bool conditions_met;
 	bool completed;
 
 	Trigger(rapidxml::xml_node<>*);

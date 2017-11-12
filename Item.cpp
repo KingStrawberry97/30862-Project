@@ -11,7 +11,7 @@ Item::Item(rapidxml::xml_node<> * item_node){
 
 	std::string node_name;
 	std::string value;
-	writing = "Item has no writing.";
+	writing = "Nothing written.";
 	name = "NO NAME";
 	description = "Item has no description.";
 	status = "";

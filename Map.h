@@ -45,9 +45,13 @@ public:
 
 private:
 	void createZorkMap(std::string filename);
+	void setItemOwners();
 	void fragmentXmlNodes(rapidxml::xml_node<>*, std::queue<rapidxml::xml_node<>*>&, std::queue<rapidxml::xml_node<> *>&, std::queue<rapidxml::xml_node<> *>&,std::queue<rapidxml::xml_node<> *>&);
 	bool checkInput(std::string input);
+	void checkTriggerConditions(Trigger* trigger);
+	void executeTrigger(Trigger* trigger);
 	int countWords(std::string input);
+	std::vector<std::string> tokenizeString(std::string);
 	Item* findItem(std::string name);
 	Container* findContainer(std::string name);
 	Creature* findCreature(std::string name);
