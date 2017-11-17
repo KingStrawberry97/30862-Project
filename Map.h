@@ -50,6 +50,10 @@ private:
 	bool checkInput(std::string input);
 	void checkTriggerConditions(Trigger* trigger);
 	void executeTrigger(Trigger* trigger);
+	void updateObject(std::string object_name, std::string status);
+	void deleteObject(std::string object_name);
+	void addObject(std::string object_name, std::string location_name);
+	std::string changeRoom(std::string command, std::string currRoom);
 	int countWords(std::string input);
 	std::vector<std::string> tokenizeString(std::string);
 	Item* findItem(std::string name);

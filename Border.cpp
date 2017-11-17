@@ -12,7 +12,7 @@ Border::Border(rapidxml::xml_node<>* node) {
 			name = value;
 		}
 		else if (node_name == (std::string)"direction") {
-			direction = value;
+			direction = value[0];
 		}
 		node = node->next_sibling();
 	}

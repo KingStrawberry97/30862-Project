@@ -128,15 +128,14 @@ void Map::run() {  // main loop for functionality of program
 				}
 			}
 
-
-
-
 			// if no trigger overrides command, execute command
+
+			// move to different room 
 
 			if (trigger_override == false) {
 				for (std::vector<std::string>::iterator p = valid_direction.begin(); p != valid_direction.end(); ++p) {
 					if ((*p) == input) {
-
+						currRoom = changeRoom(input, currRoom);
 					}
 				}
 
@@ -149,7 +148,10 @@ void Map::run() {  // main loop for functionality of program
 				// open exit
 
 				else if (input == (std::string)"open exit") {
-
+					if (findRoom(currRoom)->type == (std::string)"exit") {
+						std::cout << "VICTORY" << std::endl;
+						game_over = true;
+					}
 				}
 
 				// take [item]
@@ -202,7 +204,15 @@ void Map::run() {  // main loop for functionality of program
 				// drop [item]
 
 				else if (first_word == (std::string)"drop" && (countWords(input) == 2)) {
-
+					std::vector<std::string> words = tokenizeString(input);
+					Item* item = findItem(words.at(1));
+					if (item->owner != (std::string)"inventory") {
+						std::cout << "You don't have that item." << std::endl;
+					}
+					else {
+						item->owner = currRoom;
+						std::cout << "You drop the " << item->name << "." << std::endl;
+					}
 				}
 
 				// put [item] in [container]
@@ -588,7 +598,18 @@ void Map::checkTriggerConditions(Trigger* trigger) {
 	for (std::vector<Condition*>::iterator p = trigger->conditions.begin(); p != trigger->conditions.end(); ++p ) {
 		// Case 1: [Object] is [status]
 		if ((*p)->status != (std::string)"") {
-			
+			Base* object = all_objects.find((*p)->object)->second;
+			if (object == NULL) {
+				std::cout << "ERROR: OBJECT NOT FOUND" << std::endl;
+				return;
+			}
+			if (object->status != (*p)->status) {
+				trigger->conditions_met = false;
+				return;
+			}
+			else {
+				trigger->conditions_met = true;
+			}
 		}
 
 		// Case 2: [Container/Inventory] has [Object]
@@ -672,4 +693,37 @@ void Map::executeTrigger(Trigger* trigger) {
 	if (trigger->type == "single") {
 		trigger->completed = true;
 	}
+}
+
+void Map::updateObject(std::string object_name, std::string status) {
+	Base* object = all_objects.find(object_name)->second;
+	if (object != NULL) {
+		object->status = status;
+	}
+	else {
+		std::cout << "ERROR: OBJECT NOT FOUND" << std::endl;
+	}
+	return;
+}
+
+void Map::deleteObject(std::string object_name) {
+	// do this later
+}
+
+void Map::addObject(std::string object_name, std::string location_name) {
+	// do this later
+}
+
+std::string Map::changeRoom(std::string command, std::string currRoom) {
+	Room* currRoomP = findRoom(currRoom);
+	std::vector<Border*>::iterator p = currRoomP->borders.begin();
+	while(p != currRoomP->borders.end()) {
+		if ((*p)->direction == command) {
+			std::cout << findRoom((*p)->name)->description << std::endl;
+			return (*p)->name;
+		}
+		++p;
+	}
+	std::cout << "Can't go that way." << std::endl;
+	return currRoom;
 }
