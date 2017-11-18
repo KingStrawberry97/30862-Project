@@ -53,6 +53,8 @@ private:
 	void updateObject(std::string object_name, std::string status);
 	void deleteObject(std::string object_name);
 	void addObject(std::string object_name, std::string location_name);
+	void openContainer(Container* container, Room* currRoom);
+	void attackCreature(Creature* creature, Item* item);
 	std::string changeRoom(std::string command, std::string currRoom);
 	int countWords(std::string input);
 	std::vector<std::string> tokenizeString(std::string);

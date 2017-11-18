@@ -3,6 +3,7 @@
 #include<vector>
 #include"Trigger.h"
 #include<stdio.h>
+#include <algorithm>
 #include <string.h>
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"

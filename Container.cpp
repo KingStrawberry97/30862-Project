@@ -6,6 +6,7 @@ Container::Container(rapidxml::xml_node<> * node) {
 	description = "No description.";
 	name = "NO NAME";
 	status = "";
+	open = false;
 
 	while (node != NULL) {
 		node_name = node->name();
