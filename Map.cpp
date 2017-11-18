@@ -319,7 +319,7 @@ void Map::run() {  // main loop for functionality of program
 }
 
 void Map::attackCreature(Creature* creature, Item* item) {
-	if (std::find(creature->vulnerabilities.begin(), creature->vulnerabilities.end(), item) != creature->vulnerabilities.end()) {
+	if (std::find(creature->vulnerabilities.begin(), creature->vulnerabilities.end(), item->name) != creature->vulnerabilities.end()) {
 		checkTriggerConditions(creature->attack);
 		if (creature->attack->conditions_met) {
 			executeTrigger(creature->attack);
@@ -406,7 +406,7 @@ bool Map::checkInput(std::string input) {
 int Map::countWords(std::string input)
 {
 	int number_of_words = 1;
-	for (int i = 0; i < input.length(); i++)
+	for (int i = 0; i < (int)input.length(); i++)
 		if (input[i] == ' ')
 			number_of_words++;
 	return number_of_words;
@@ -837,6 +837,7 @@ void Map::updateObject(std::string object_name, std::string status) {
 }
 
 void Map::deleteObject(std::string object_name) {
+	// d e f i n i t e l y needs testing
 	Item* item = findItem(object_name);
 	Creature* creature = findCreature(object_name);
 	Container* container = findContainer(object_name);
@@ -845,11 +846,47 @@ void Map::deleteObject(std::string object_name) {
 	if (creature != NULL) {
 		for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
 			for (std::vector<std::string>::iterator q = p->second->creatures.begin(); q != p->second->creatures.end(); ++q) {
-				if () {
-
+				if ((*q) == object_name) {
+					p->second->creatures.erase(std::remove(p->second->creatures.begin(), p->second->creatures.end(), object_name), p->second->creatures.end());
 				}
 			}
 		}
+	}
+	else if (container != NULL) {
+		for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
+			for (std::vector<std::string>::iterator q = p->second->containers.begin(); q != p->second->containers.end(); ++q) {
+				if ((*q) == object_name) {
+					p->second->containers.erase(std::remove(p->second->containers.begin(), p->second->containers.end(), object_name), p->second->containers.end());
+				}
+			}
+		}
+	}
+	else if (room != NULL) {
+		for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
+			if (p->second->name == object_name) {
+				// this is causing an error for some reason and I can't get it to work
+				//rooms.erase(std::remove(rooms.begin(), rooms.end(), room), rooms.end());
+			}
+		}
+	}
+	else if (item != NULL) {
+		for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
+			for (std::vector<std::string>::iterator q = p->second->items.begin(); q != p->second->items.end(); ++q) {
+				if ((*q) == object_name) {
+					p->second->items.erase(std::remove(p->second->items.begin(), p->second->items.end(), object_name), p->second->items.end());
+				}
+			}
+		}
+		for (std::map<std::string, Container*>::iterator p = containers.begin(); p != containers.end(); ++p) {
+			for (std::vector<std::string>::iterator q = p->second->items.begin(); q != p->second->items.end(); ++q) {
+				if ((*q) == object_name) {
+					p->second->items.erase(std::remove(p->second->items.begin(), p->second->items.end(), object_name), p->second->items.end());
+				}
+			}
+		}
+	}
+	else {
+		std::cout << "ERROR: OBJECT NOT FOUND FOR DELETION" << std::endl;
 	}
 }
 
