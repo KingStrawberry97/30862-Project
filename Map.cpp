@@ -809,11 +809,11 @@ void Map::executeTrigger(Trigger* trigger) {
 		}
 		// Case 2: Add [object] to [room]
 		else if (words.at(0) == (std::string)"Add") {
-
+			addObject(words.at(1), words.at(3));
 		}
 		// Case 3: Delete [object]
 		else if (words.at(0) == (std::string)"Delete") {
-
+			deleteObject(words.at(1));
 		}
 		else {
 			std::cout << "ERROR: UNKNOWN ACTION" << std::endl;
@@ -837,7 +837,7 @@ void Map::updateObject(std::string object_name, std::string status) {
 }
 
 void Map::deleteObject(std::string object_name) {
-	// d e f i n i t e l y needs testing
+	// d e f i n i t e l y needs testing, not sure if works
 	Item* item = findItem(object_name);
 	Creature* creature = findCreature(object_name);
 	Container* container = findContainer(object_name);
@@ -891,7 +891,7 @@ void Map::deleteObject(std::string object_name) {
 	}
 }
 
-void Map::addObject(std::string object_name, std::string location_name) {
+void Map::addObject(std::string object_name, std::string location_name) { // doesn't work yet
 
 	Container* container = findContainer(location_name);
 	if (container != NULL) {
