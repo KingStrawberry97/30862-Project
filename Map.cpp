@@ -863,9 +863,10 @@ void Map::deleteObject(std::string object_name) {
 	}
 	else if (room != NULL) {
 		for (std::map<std::string, Room*>::iterator p = rooms.begin(); p != rooms.end(); ++p) {
-			if (p->second->name == object_name) {
-				// this is causing an error for some reason and I can't get it to work
-				//rooms.erase(std::remove(rooms.begin(), rooms.end(), room), rooms.end());
+			for (std::vector<Border*>::iterator q = p->second->borders.begin(); q != p->second->borders.end(); ++q) {
+				if ((*q)->name == object_name) {
+					(*q)->name = "";
+				}
 			}
 		}
 	}
@@ -939,6 +940,10 @@ std::string Map::changeRoom(std::string command, std::string currRoom) {
 	std::vector<Border*>::iterator p = currRoomP->borders.begin();
 	while(p != currRoomP->borders.end()) {
 		if ((*p)->direction == command) {
+			if ((*p)->name == (std::string)"") {
+				std::cout << "That room no longer exists." << std::endl;
+				return currRoom;
+			}
 			std::cout << findRoom((*p)->name)->description << std::endl;
 			return (*p)->name;
 		}
