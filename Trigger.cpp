@@ -6,6 +6,8 @@ Trigger::Trigger(rapidxml::xml_node<>* node) {
 	std::string value;
 	type = "single";
 	command = "";
+	completed = false;
+	conditions_met = false;
 
 	while (node != NULL) {
 		node_name = node->name();

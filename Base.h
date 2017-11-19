@@ -3,6 +3,7 @@
 #include<vector>
 #include"Trigger.h"
 #include<stdio.h>
+#include <algorithm>
 #include <string.h>
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
@@ -13,9 +14,11 @@ public:
 	std::string name;
 	std::string status;
 	std::string description;
-	std::vector<Trigger*>triggers; //triggers to be searched for in main loop of program
+	std::vector<Trigger*>triggers;
 	Base();
 	~Base();
+
+	Trigger* checkTriggers(std::string command);
 
 };
 

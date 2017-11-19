@@ -11,6 +11,7 @@ public:
 	Item(rapidxml::xml_node<>*);
 	virtual ~Item();
 	std::string writing;
+	std::string owner;
 	Trigger* turn_on;
 };
 

@@ -36,6 +36,7 @@ public:
 	std::map<std::string, Room*> rooms;
 	//map<char*, char*> lookup;
 	void printItems();
+	void printInventory();
 	void printContainers();
 	void printCreatures();
 	void printRooms();
@@ -44,7 +45,25 @@ public:
 
 private:
 	void createZorkMap(std::string filename);
+	void setItemOwners();
 	void fragmentXmlNodes(rapidxml::xml_node<>*, std::queue<rapidxml::xml_node<>*>&, std::queue<rapidxml::xml_node<> *>&, std::queue<rapidxml::xml_node<> *>&,std::queue<rapidxml::xml_node<> *>&);
+	bool checkInput(std::string input);
+	void checkTriggerConditions(Trigger* trigger);
+	void executeTrigger(Trigger* trigger);
+	void updateObject(std::string object_name, std::string status);
+	void deleteObject(std::string object_name);
+	void addObject(std::string object_name, std::string location_name);
+	void openContainer(Container* container, Room* currRoom);
+	void attackCreature(Creature* creature, Item* item);
+	std::string changeRoom(std::string command, std::string currRoom);
+	int countWords(std::string input);
+	std::vector<std::string> tokenizeString(std::string);
+	Item* findItem(std::string name);
+	Container* findContainer(std::string name);
+	Creature* findCreature(std::string name);
+	Room* findRoom(std::string name);
+	Trigger* checkRoomTriggers(Room* current_room, std::string command);
+
 };
 
 #endif /* MAP_H_ */
