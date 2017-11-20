@@ -167,7 +167,7 @@ void Map::run() {  // main loop for functionality of program
 							std::cout << "You can't take that." << std::endl;
 						}
 						else {
-							std::cout << "You take the " << item->name << "." << std::endl;
+							std::cout << "Item " << item->name << " added to inventory." << std::endl;
 							item->owner = "inventory";
 						}
 					}
@@ -183,7 +183,7 @@ void Map::run() {  // main loop for functionality of program
 					Container* container = findContainer(words.at(1));
 					if (container != NULL) {
 						if (container->open == true) {
-							std::cout << container->name << " is already open." << std::endl;
+							//std::cout << container->name << " is already open." << std::endl;
 						}
 						else {
 							openContainer(container, findRoom(currRoom));
@@ -277,6 +277,7 @@ void Map::run() {  // main loop for functionality of program
 									std::cout << item->name << " has already been turned on." << std::endl;
 								}
 								else {
+									std::cout << "You activate the " << item -> name << std::endl;
 									executeTrigger(item->turn_on);
 								}
 							}
@@ -300,7 +301,9 @@ void Map::run() {  // main loop for functionality of program
 						else if (std::find(findRoom(currRoom)->creatures.begin(), findRoom(currRoom)->creatures.end(), creature->name) != findRoom(currRoom)->creatures.end()) {
 							std::cout << "That creature isn't here." << std::endl;
 						}
-						attackCreature(creature, item);
+						else {
+							attackCreature(creature, item);
+						}
 					}
 					else {
 						std::cout << "You can't do that." << std::endl;
@@ -314,9 +317,50 @@ void Map::run() {  // main loop for functionality of program
 			std::cout << "Invalid input." << std::endl;
 		}
 		// to do: check if other triggers need to be activated
+		checkAllTriggers(findRoom(currRoom));
 	}
 
 }
+
+void Map::checkAllTriggers(Room* current_room) {
+	Item* item = NULL;
+	Container* container = NULL;
+	Creature* creature = NULL;
+	Trigger* found_trigger = NULL;
+
+	for (std::vector<std::string>::iterator q = current_room->items.begin(); q != current_room->items.end(); ++q) {
+		item = findItem(*q);
+		found_trigger = item->checkOtherTriggers();
+		if (found_trigger != NULL) {
+			checkTriggerConditions(found_trigger);
+			if (found_trigger->conditions_met && (!(found_trigger->completed))) {
+				executeTrigger(found_trigger);
+			}
+		}
+	}
+	for (std::vector<std::string>::iterator q = current_room->containers.begin(); q != current_room->containers.end(); ++q) {
+		container = findContainer(*q);
+		found_trigger = container->checkOtherTriggers();
+		if (found_trigger != NULL) {
+			checkTriggerConditions(found_trigger);
+			if (found_trigger->conditions_met && (!(found_trigger->completed))) {
+				executeTrigger(found_trigger);
+			}
+		}
+	}
+	//some sort of issue here in trying to iterate through creatures in a room. Its not finding any
+	//for (std::vector<std::string>::iterator q = current_room->creatures.begin(); q != current_room->creatures.end(); ++q) {
+		creature = findCreature("gnome");
+		found_trigger = creature->checkOtherTriggers();
+		if (found_trigger != NULL) {
+			checkTriggerConditions(found_trigger);
+			if (found_trigger->conditions_met && (!(found_trigger->completed))) {
+				executeTrigger(found_trigger);
+			}
+		}
+//	}
+}
+
 
 void Map::attackCreature(Creature* creature, Item* item) {
 	if (std::find(creature->vulnerabilities.begin(), creature->vulnerabilities.end(), item->name) != creature->vulnerabilities.end()) {
@@ -424,11 +468,11 @@ void Map::printInventory() {
 			inv_empty = false;
 		}
 	}
-	std::cout << std::endl;
 
 	if (inv_empty == true) {
-		std::cout << "empty" << std::endl;
+		std::cout << "empty";
 	}
+	std::cout << std::endl;
 
 }
 

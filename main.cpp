@@ -14,7 +14,7 @@
 
 
 int main(int argc, char* argv[]) {
-	std::string input;
+std::string input;
 	std::cout << "Input file name: ";
 	std::getline(std::cin, input);
 

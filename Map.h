@@ -63,6 +63,7 @@ private:
 	Creature* findCreature(std::string name);
 	Room* findRoom(std::string name);
 	Trigger* checkRoomTriggers(Room* current_room, std::string command);
+	void checkAllTriggers(Room* current_room);
 
 };
 

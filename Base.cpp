@@ -22,3 +22,12 @@ Trigger* Base::checkTriggers(std::string command) {
 	return NULL;
 }
 
+Trigger* Base::checkOtherTriggers() {
+	for(std::vector<Trigger*>:: iterator q = triggers.begin(); q != triggers.end(); ++q){
+		if((*q) != NULL) {
+			return((*q));
+		}
+	}
+	return NULL;
+}
+
